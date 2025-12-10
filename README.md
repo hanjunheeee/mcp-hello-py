@@ -101,15 +101,6 @@ python3 -c "from src.server import say_hello_multiple; print(say_hello_multiple(
 
 ## 🚀 GCP 배포
 
-```bash
-# 1. Artifact Registry 생성
-gcloud artifacts repositories create mcp-hello-py \
-  --repository-format=docker \
-  --location=asia-northeast3
-
-# 2. 배포
-gcloud builds submit --config=cloudbuild.yaml
-```
 
 ## 📁 프로젝트 구조
 
@@ -117,11 +108,10 @@ gcloud builds submit --config=cloudbuild.yaml
 mcp-hello-py/
 ├── src/
 │   ├── __init__.py       # 패키지 초기화
-│   └── server.py         # MCP 서버 (~230줄)
+│   └── server.py         # MCP 서버 
 ├── requirements.txt      # 의존성
 ├── pyproject.toml       # 프로젝트 메타데이터
 ├── Dockerfile           # Docker 설정
-├── cloudbuild.yaml      # GCP 배포 설정
 └── README.md           # 이 파일
 ```
 
@@ -132,7 +122,6 @@ mcp-hello-py/
 - **Pydantic**: 2.x
 - **Uvicorn**: ASGI 서버
 - **Docker**: 컨테이너화
-- **GCP Cloud Run**: 배포
 
 ## 🌐 전송 모드
 

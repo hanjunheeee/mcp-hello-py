@@ -30,6 +30,7 @@ Simple Hello MCP Server
 import os
 
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 
 # ============================================================================
 # FastMCP 서버 생성
@@ -40,10 +41,11 @@ mcp = FastMCP(
     instructions="이름을 받아 한국어로 인사하는 간단한 MCP 서버입니다.",
     stateless_http=True,
     json_response=True,
+    host="0.0.0.0",
+    transport_security=TransportSecuritySettings(
+        enable_dns_rebinding_protection=False,
+    ),
 )
-
-# Cloud Run 환경에서 Host 헤더 검증 비활성화
-os.environ.setdefault("MCP_ALLOW_ORIGIN", "*")
 
 
 # ============================================================================
@@ -228,34 +230,12 @@ def main():
         stdio 모드:
             $ python src/server.py
     """
-    import contextlib
     import sys
     
     if "--http-stream" in sys.argv:
-        import uvicorn
-        from starlette.applications import Starlette
-        from starlette.middleware import Middleware
-        from starlette.middleware.trustedhost import TrustedHostMiddleware
-        from starlette.routing import Mount
-        
         port = int(os.environ.get("PORT", 8080))
-        
-        @contextlib.asynccontextmanager
-        async def lifespan(app: Starlette):
-            async with mcp.session_manager.run():
-                yield
-        
-        app = Starlette(
-            routes=[
-                Mount("/", app=mcp.streamable_http_app()),
-            ],
-            middleware=[
-                Middleware(TrustedHostMiddleware, allowed_hosts=["*"]),
-            ],
-            lifespan=lifespan,
-        )
-        
-        uvicorn.run(app, host="0.0.0.0", port=port)
+        mcp.settings.port = port
+        mcp.run(transport="streamable-http")
     else:
         mcp.run(transport="stdio")
 
