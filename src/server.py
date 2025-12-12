@@ -104,6 +104,43 @@ def say_hello_multiple(names: list[str]) -> str:
     return "\n".join(greetings)
 
 
+@mcp.tool()
+def calculate(operation: str, a: float, b: float) -> str:
+    """
+    간단한 사칙연산을 수행합니다.
+    
+    Args:
+        operation: 연산 종류 ("add", "subtract", "multiply", "divide")
+        a: 첫 번째 숫자
+        b: 두 번째 숫자
+    
+    Returns:
+        계산 결과 문자열
+    
+    Examples:
+        >>> calculate("add", 10, 5)
+        '10.0 + 5.0 = 15.0'
+        >>> calculate("divide", 10, 3)
+        '10.0 ÷ 3.0 = 3.33'
+    """
+    if operation == "add":
+        result = a + b
+        return f"{a} + {b} = {result}"
+    elif operation == "subtract":
+        result = a - b
+        return f"{a} - {b} = {result}"
+    elif operation == "multiply":
+        result = a * b
+        return f"{a} × {b} = {result}"
+    elif operation == "divide":
+        if b == 0:
+            return "❌ 0으로 나눌 수 없습니다!"
+        result = a / b
+        return f"{a} ÷ {b} = {round(result, 2)}"
+    else:
+        return f"❌ 지원하지 않는 연산입니다: {operation}\n지원 연산: add, subtract, multiply, divide"
+
+
 # ============================================================================
 # Resources (리소스)
 # ============================================================================
